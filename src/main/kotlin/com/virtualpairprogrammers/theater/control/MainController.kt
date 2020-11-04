@@ -41,6 +41,8 @@ class MainController {
 class CheckAvailabilityBackingBean() {
     val seatNums = 1..36
     val seatRows = 'A'..'O'
+    // below must be var because those data are sent back and forward between
+    // server and template
     var selectedSeatNum: Int = 1
     var selectedSeatRow: Char = 'A'
     var result: String = ""
