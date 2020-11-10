@@ -9,6 +9,7 @@ import com.virtualpairprogrammers.theater.services.BookingService
 import com.virtualpairprogrammers.theater.services.TheaterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.ModelAndView
@@ -48,6 +49,9 @@ class MainController {
         bean.performance = selectedPerformance
         val result =  bookingService.isSeatFree(selectedSeat, selectedPerformance)
         bean.available = result
+        if (!result) {
+            bean.booking = bookingService.findBooking(selectedSeat, selectedPerformance)
+        }
         val model = mapOf(
                 "bean" to bean,
                 "performances" to performanceRepository.findAll(),
@@ -56,13 +60,19 @@ class MainController {
         )
         return ModelAndView("seatBooking", model)
     }
-/*
+
+    @RequestMapping("booking", method= arrayOf(RequestMethod.POST))
+    fun bookSeat(bean: CheckAvailabilityBackingBean) : ModelAndView {
+        val booking = bookingService.reserveSeat(bean.seat!!, bean.performance!!, bean.customerName)
+        return ModelAndView("bookingConfirmed", "booking", booking)
+    }
+
     @RequestMapping("bootstrap")
     fun createInitialData(): ModelAndView {
         val seats = theaterService.seats
         seatRepository.saveAll(seats)
         return homePage()
-    }*/
+    }
 }
 
 /*
